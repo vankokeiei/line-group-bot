@@ -23,13 +23,13 @@ def handle_message(event):
     if not text.startswith("!"):
         return
 
-    if text == "!help":
+    if text == "help":
         reply = (
             "คำสั่งที่ใช้ได้:\n"
-            "!รายงานkiosk , !รายงาน , !ยอด"
+            "รายงานkiosk , รายงาน , ยอด"
         )
 
-    elif text == "!รายงานkiosk , !รายงาน , !ยอด":
+    elif text == "รายงานkiosk , รายงาน , ยอด":
         reply = (
             "📊 รายงานตู้ KIOSK\n"
             "https://smartcargo.airportthai.co.th/aotwebmanagement/reports/KisokreportComponent\n\n"
@@ -49,17 +49,9 @@ def handle_message(event):
             "และส่งในกลุ่มทุกเที่ยงคืน\n"
             "ให้แจ้งว่า: รายงานครบทุกตู้"
         )
-
+        
     else:
-        reply = "ไม่รู้จักคำสั่งนี้ พิมพ์ !help"
-
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply)
-    )@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    text = event.message.text.lower()
-
+        reply = "ไม่รู้จักคำสั่งนี้ พิมพ์ help"
     if text == "สวัสดี":
         reply = "สวัสดีครับ ผมคือบอทกลุ่ม 🤖"
     elif text == "help":
@@ -67,7 +59,7 @@ def handle_message(event):
     elif text == "ราคา":
         reply = "กรุณาติดต่อแอดมินครับ"
     else:
-        return
+        reply = "ไม่รู้จักคำสั่งนี้ พิมพ์ help"
 
     line_bot_api.reply_message(
         event.reply_token,

@@ -26,10 +26,10 @@ def handle_message(event):
     if text == "!help":
         reply = (
             "คำสั่งที่ใช้ได้:\n"
-            "รายงานkiosk , รายงาน , ยอด"
+            "!รายงานkiosk , !รายงาน , !ยอด"
         )
 
-    elif text == "รายงานkiosk , รายงาน , ยอด":
+    elif text == "!รายงานkiosk , !รายงาน , !ยอด":
         reply = (
             "📊 รายงานตู้ KIOSK\n"
             "https://smartcargo.airportthai.co.th/aotwebmanagement/reports/KisokreportComponent\n\n"

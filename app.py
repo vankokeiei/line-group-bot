@@ -15,7 +15,7 @@ def callback():
     handler.handle(body, signature)
     return "OK"
 
-  @handler.add(MessageEvent, message=TextMessage)
+@handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text.strip()
 
@@ -26,10 +26,10 @@ def handle_message(event):
     if text == "!help":
         reply = (
             "คำสั่งที่ใช้ได้:\n"
-            "!รายงานkiosk"
+            "รายงานkiosk , รายงาน , ยอด"
         )
 
-    elif text == "!รายงานkiosk":
+    elif text == "รายงานkiosk , รายงาน , ยอด":
         reply = (
             "📊 รายงานตู้ KIOSK\n"
             "https://smartcargo.airportthai.co.th/aotwebmanagement/reports/KisokreportComponent\n\n"
@@ -56,4 +56,23 @@ def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=reply)
-  )
+    )@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    text = event.message.text.lower()
+
+    if text == "สวัสดี":
+        reply = "สวัสดีครับ ผมคือบอทกลุ่ม 🤖"
+    elif text == "help":
+        reply = "คำสั่ง: สวัสดี / ราคา / สถานะ"
+    elif text == "ราคา":
+        reply = "กรุณาติดต่อแอดมินครับ"
+    else:
+        return
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply)
+    )
+
+if __name__ == "__main__":
+    app.run()

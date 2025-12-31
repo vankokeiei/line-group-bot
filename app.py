@@ -15,6 +15,7 @@ def callback():
     handler.handle(body, signature)
     return "OK"
 
+# ...existing code...
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text.strip()
@@ -23,13 +24,17 @@ def handle_message(event):
     if not text.startswith("!"):
         return
 
-    if text == "!help":
+    cmd = text.split()[0]
+
+    if cmd == "!help":
         reply = (
             "คำสั่งที่ใช้ได้:\n"
-            "!รายงานkiosk"
+            "!รายงานkiosk\n"
+            "!ยอด\n"
+            "!รายงาน"
         )
 
-    elif text == "!รายงานkiosk":
+    elif cmd in ("!รายงานkiosk", "!ยอด", "!รายงาน"):
         reply = (
             "📊 รายงานตู้ KIOSK\n"
             "https://smartcargo.airportthai.co.th/aotwebmanagement/reports/KisokreportComponent\n\n"
@@ -57,7 +62,4 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=reply)
     )
-
-
-if __name__ == "__main__":
-    app.run()
+# ...existing code...

@@ -19,8 +19,8 @@ def callback():
 def handle_message(event):
     text = event.message.text.strip()
 
-    # ตอบเฉพาะคำสั่ง !
-    if not text.startswith("!"):
+    # ตอบเฉพาะคำสั่ง /
+    if not text.startswith("/"):
         return
 
     cmd = text.split()[0]

@@ -40,7 +40,7 @@ elif cmd in ("!รายงานkiosk", "!ยอด", "!รายงาน"):
         "📊 รายงานตู้ KIOSK\n"
         "https://smartcargo.airportthai.co.th/aotwebmanagement/reports/KisokreportComponent\n\n"
         "User : wanakorn.poa@proinside.co.th\n"
-        "Password : 0000\n\n"
+        "Password : 10101010\n\n"
         "วิธีใช้งาน:\n"
         "ไปที่หัวข้อ A7 รายงาน\n"
         "เลือกไปที่รายงานประจำตู้ KIOSK\n"

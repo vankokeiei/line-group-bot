@@ -15,7 +15,6 @@ def callback():
     handler.handle(body, signature)
     return "OK"
 
-# ...existing code...
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     text = event.message.text.strip()
@@ -62,4 +61,4 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(text=reply)
     )
-# ...existing code...
+if __name__ == "__main__":

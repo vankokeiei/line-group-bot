@@ -94,7 +94,7 @@ def handle_message(event):
         "ดิฟ 091-037-5913")
 
     elif text == "/ภาษี , /vat":    
-     image_url = "https://github.dev/vankokeiei/line-group-bot/blob/45be6c472431de9f7160f47450e06d20cf5faa1f/LINE_NOTE_260101_1.jpg"
+     image_url = "https://github.com/vankokeiei/line-group-bot/blob/main/LINE_NOTE_260101_1.jpg?raw=true"
 
     else:
         reply = "ไม่รู้จักคำสั่งนี้ พิมพ์ /help"

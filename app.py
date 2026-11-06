@@ -36,7 +36,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_id = getattr(event.source, "user_id", None)
-    app.logger.info("LINE USER ID: %s", user_id)
+    print("LINE USER ID:", user_id, flush=True)
 
     text = event.message.text.strip().lower()
     if not text:

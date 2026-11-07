@@ -142,7 +142,6 @@ def appwatch_upload():
         img = Image.open(io.BytesIO(image_data))
         img.load()
 
-        # เตรียมภาพต้นฉบับ PNG
         original = io.BytesIO()
         img.save(original, format="PNG", optimize=True)
         original_data = original.getvalue()
@@ -170,7 +169,7 @@ def appwatch_upload():
 
         preview_key = key.replace(".png", "_preview.jpg")
 
-        # อัปโหลดภาพทั้งสองขนาดเข้า R2
+                # อัปโหลดภาพทั้งสองขนาดเข้า R2
         r2.put_object(
             Bucket=R2_BUCKET_NAME,
             Key=key,
@@ -185,10 +184,9 @@ def appwatch_upload():
             ContentType="image/jpeg"
         )
 
-        original_url = create_worker_image_url(original_key)
-
+        # สร้าง Signed URL ผ่าน Cloudflare Worker
+        original_url = create_worker_image_url(key)
         preview_url = create_worker_image_url(preview_key)
-        
 
         # ส่งภาพเข้า LINE
         line_bot_api.push_message(
@@ -203,7 +201,7 @@ def appwatch_upload():
                 )
             ]
         )
-
+        
         # ลบภาพที่เก่ากว่า 24 ชั่วโมง
         try:
             cleanup_old_r2_images()

@@ -5,6 +5,8 @@ from linebot.models import (
     TextSendMessage, ImageSendMessage
 )
 import os
+import hashlib
+from urllib.parse import urlencode
 import uuid
 import boto3
 import io
@@ -31,6 +33,8 @@ R2_ENDPOINT = os.getenv("R2_ENDPOINT")
 
 APPWATCH_UPLOAD_TOKEN = os.getenv("APPWATCH_UPLOAD_TOKEN")
 LINE_USER_ID = os.getenv("LINE_USER_ID")
+APPWATCH_IMAGE_TOKEN = os.getenv("APPWATCH_IMAGE_TOKEN")
+APPWATCH_IMAGE_WORKER_URL = os.getenv("APPWATCH_IMAGE_WORKER_URL")
 
 r2 = None
 
@@ -49,6 +53,27 @@ if all([
         region_name="auto",
         config=Config(signature_version="s3v4")
     )
+def create_worker_image_url(key):
+    if not APPWATCH_IMAGE_TOKEN or not APPWATCH_IMAGE_WORKER_URL:
+       raise ValueError("AppWatch image Worker configuration missing")
+    
+    exp = int(datetime.now(timezone.utc).timestamp()) + 86400
+
+    message = f"{key}:{exp}".encode("utf-8")
+
+    signature = hmac.new(
+        APPWATCH_IMAGE_TOKEN.encode("utf-8"),
+        message,
+        hashlib.sha256
+    ).hexdigest()
+
+    params = urlencode({
+        "key": key,
+        "exp": exp,
+        "sig": signature
+    })
+
+    return f"{APPWATCH_IMAGE_WORKER_URL}?{params}"
 
 @app.route("/callback", methods=["POST"])
 def callback():
@@ -160,24 +185,10 @@ def appwatch_upload():
             ContentType="image/jpeg"
         )
 
-        # สร้างลิงก์ชั่วคราวให้ LINE เปิดอ่านภาพได้
-        original_url = r2.generate_presigned_url(
-            "get_object",
-            Params={
-                "Bucket": R2_BUCKET_NAME,
-                "Key": key
-            },
-            ExpiresIn=86400
-        )
+        original_url = create_worker_image_url(original_key)
 
-        preview_url = r2.generate_presigned_url(
-            "get_object",
-            Params={
-                "Bucket": R2_BUCKET_NAME,
-                "Key": preview_key
-            },
-            ExpiresIn=86400
-        )
+        preview_url = create_worker_image_url(preview_key)
+        
 
         # ส่งภาพเข้า LINE
         line_bot_api.push_message(

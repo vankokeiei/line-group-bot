@@ -88,6 +88,8 @@ if all([
 # LINE RECIPIENT STORAGE
 # =====================================
 
+
+
 def load_line_recipients():
 
     if r2 is None:
@@ -118,20 +120,20 @@ def load_line_recipients():
 
         if error_code in ("NoSuchKey", "404", "NotFound"):
 
-    legacy_recipients = []
+            legacy_recipients = []
 
-    if LINE_USER_ID and is_valid_line_user_id(LINE_USER_ID):
+            if LINE_USER_ID and is_valid_line_user_id(LINE_USER_ID):
 
-        legacy_recipients.append({
-            "user_id": LINE_USER_ID,
-            "name": "ผู้รับเดิม",
-            "enabled": True
-        })
+                legacy_recipients.append({
+                    "user_id": LINE_USER_ID,
+                    "name": "ผู้รับเดิม",
+                    "enabled": True
+                })
 
-    if legacy_recipients:
-        save_line_recipients(legacy_recipients)
+            if legacy_recipients:
+                save_line_recipients(legacy_recipients)
 
-    return legacy_recipients
+            return legacy_recipients
 
         raise
 

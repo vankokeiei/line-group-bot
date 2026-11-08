@@ -224,8 +224,10 @@ def admin_login():
             password = request.form.get("password", "")
 
             if secrets.compare_digest(
-                password, ADMIN_PASSWORD
-            ):
+                password.encode("utf-8"),
+                ADMIN_PASSWORD.encode("utf-8")
+):
+           
 
                 session.clear()
                 session.permanent = True

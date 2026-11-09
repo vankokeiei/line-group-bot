@@ -381,6 +381,8 @@ def admin_recipients():
         return "Cannot load recipient data", 500
 
     notices = {
+        "test_sent": "ส่งข้อความทดสอบสำเร็จแล้ว",
+"test_failed": "ส่งข้อความทดสอบไม่สำเร็จ กรุณาตรวจสอบ Logs",
         "added": "เพิ่มผู้รับเรียบร้อยแล้ว",
         "deleted": "ลบผู้รับเรียบร้อยแล้ว",
         "duplicate": "LINE ID นี้มีอยู่แล้ว",
@@ -530,6 +532,24 @@ def admin_recipients():
                         {{ recipient.user_id }}
                     </p>
 
+
+<form method="POST"
+      action="{{ url_for('admin_test_recipient') }}">
+
+    <input type="hidden"
+           name="csrf_token"
+           value="{{ csrf_token }}">
+
+    <input type="hidden"
+           name="user_id"
+           value="{{ recipient.user_id }}">
+
+    <button type="submit">
+        🧪 ส่งข้อความทดสอบ
+    </button>
+
+</form>
+
                     <form method="POST"
                           action="{{ url_for('admin_delete_recipient') }}">
 
@@ -671,6 +691,76 @@ def admin_delete_recipient():
 
 @app.route("/admin/logout", methods=["POST"])
 @admin_required
+
+
+# =====================================
+# TEST LINE RECIPIENT
+# =====================================
+
+@app.route("/admin/recipients/test", methods=["POST"])
+@admin_required
+def admin_test_recipient():
+
+    if not check_admin_csrf():
+        return "Invalid CSRF token", 403
+
+    user_id = request.form.get("user_id", "").strip()
+
+    try:
+        recipients = load_line_recipients()
+
+        # ตรวจสอบว่าผู้รับมีอยู่จริงและเปิดใช้งาน
+        recipient = next(
+            (
+                item for item in recipients
+                if isinstance(item, dict)
+                and item.get("user_id") == user_id
+                and item.get("enabled") is True
+            ),
+            None
+        )
+
+        if not recipient or not is_valid_line_user_id(user_id):
+            return redirect(url_for(
+                "admin_recipients",
+                status="test_failed"
+            ))
+
+        # ข้อความทดสอบ
+        test_message = (
+            "🧪 APPWATCH TEST NOTIFICATION\n\n"
+            "นี่คือข้อความทดสอบระบบแจ้งเตือน LINE\n\n"
+            f"ผู้รับ: {recipient.get('name', 'ไม่ระบุชื่อ')}\n\n"
+            "หากได้รับข้อความนี้ แสดงว่า Bot "
+            "สามารถส่งข้อความถึงผู้รับนี้ได้แล้ว"
+        )
+
+        # ส่งเฉพาะผู้รับที่เลือก
+        line_bot_api.push_message(
+            user_id,
+            [
+                TextSendMessage(text=test_message)
+            ]
+        )
+
+        app.logger.info(
+            "LINE test message sent: %s",
+            recipient.get("name", "Unknown")
+        )
+
+        return redirect(url_for(
+            "admin_recipients",
+            status="test_sent"
+        ))
+
+    except Exception:
+        app.logger.exception("LINE test message failed")
+
+        return redirect(url_for(
+            "admin_recipients",
+            status="test_failed"
+        ))
+
 def admin_logout():
 
     if not check_admin_csrf():

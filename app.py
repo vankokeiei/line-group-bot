@@ -163,10 +163,17 @@ def save_line_recipients(recipients):
 
 
 def is_valid_line_user_id(user_id):
+    """
+    รองรับ LINE User ID และ LINE Group ID
+    U = User
+    C = Group
+    """
 
     return bool(
-        re.fullmatch(r"U[0-9a-fA-F]{32}", user_id)
+        re.fullmatch(r"[UC][0-9a-fA-F]{32}", user_id)
     )
+
+ 
     # =====================================
 # ADMIN LOGIN SYSTEM
 # =====================================
@@ -496,7 +503,7 @@ def admin_recipients():
                 <input
                     type="text"
                     name="user_id"
-                    placeholder="LINE User ID (U...)"
+                    placeholder="LINE ID (U... บุคคล / C... กลุ่ม)"
                     required
                     maxlength="33"
                 >

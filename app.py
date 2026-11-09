@@ -977,6 +977,11 @@ def handle_message(event):
     user_id = getattr(event.source, "user_id", None)
     print("LINE USER ID:", user_id, flush=True)
 
+    group_id = getattr(event.source, "group_id", None)
+
+    if group_id:
+        print("LINE GROUP ID:", group_id, flush=True)
+
     text = event.message.text.strip().lower()
     if not text:
         return

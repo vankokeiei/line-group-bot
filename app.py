@@ -689,8 +689,6 @@ def admin_delete_recipient():
         ))
 
 
-@app.route("/admin/logout", methods=["POST"])
-@admin_required
 
 
 # =====================================
@@ -726,6 +724,8 @@ def admin_test_recipient():
                 status="test_failed"
             ))
 
+
+
         # ข้อความทดสอบ
         test_message = (
             "🧪 APPWATCH TEST NOTIFICATION\n\n"
@@ -760,6 +760,8 @@ def admin_test_recipient():
             "admin_recipients",
             status="test_failed"
         ))
+@app.route("/admin/logout", methods=["POST"])
+@admin_required
 
 def admin_logout():
 
